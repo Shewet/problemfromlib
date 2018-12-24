@@ -1,0 +1,3 @@
+[xblock.v1]
+library-problem = libraryproblem:GoogleDocumentBlock
+

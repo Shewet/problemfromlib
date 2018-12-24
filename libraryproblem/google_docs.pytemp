@@ -1,0 +1,75 @@
+""" Google Document XBlock implementation """
+# -*- coding: utf-8 -*-
+#
+
+# Imports ###########################################################
+import os,sys
+import logging
+import textwrap
+import requests
+from django.utils.translation import ugettext as _
+from xblock.core import XBlock
+from xblock.fields import Scope, String,List,Integer
+from xblock.fragment import Fragment
+from opaque_keys.edx.locator import LibraryLocator
+from gettext import ngettext
+from xblockutils.publish_event import PublishEventMixin
+from xblockutils.resources import ResourceLoader
+from django.utils.translation import ugettext as _
+LOG = logging.getLogger(__name__)
+RESOURCE_LOADER = ResourceLoader(__name__)
+
+import xmodule
+from xmodule import library_root_xblock,library_tools,library_content_module
+from xmodule.library_content_module import LibraryContentFields,LibraryContentModule
+
+@XBlock.wants('library_tools')  #
+@XBlock.needs("i18n")  # pylint: disable=too-many-ancestors
+@XBlock.wants('library_tools')
+@XBlock.wants('studio_user_permissions')
+@XBlock.wants('user')
+@XBlock.wants('library_content_module')
+@XBlock.wants('library_root_xblock')
+class GoogleDocumentBlock(XBlock):
+    randomblock= LibraryContentModule(None)
+    source_problem_id = String(
+        display_name=_("Problem"),
+        help=_("Select the library from which you want to draw content."),
+        scope=Scope.settings,
+        values_provider=lambda instance: instance.source_problem_values(),
+    )
+
+    # Context argument is specified for xblocks, but we are not using herein
+    def student_view(self, context):  # pylint: disable=unused-argument
+        """
+        Player view, displayed to the student
+        """
+        fragment = Fragment()
+        return fragment
+
+    def studio_view(self, context):  # pylint: disable=unused-argument
+        """
+        Editing view in Studio
+        """
+        fragment = Fragment()
+
+        return fragment
+
+
+class temporary(LibraryContentFields):
+    source_problem_id = String(
+        display_name=_("Problem"),
+        help=_("Select the library from which you want to draw content."),
+        scope=Scope.settings,
+        values_provider=lambda instance: instance.source_problem_values(),
+    )
+
+
+#
+
+
+
+# Constants ###########################################################
+
+DOCUMENT_TEMPLATE = "/templates/html/google_docs.html"
+DOCUMENT_EDIT_TEMPLATE = "/templates/html/google_docs_edit.html"
